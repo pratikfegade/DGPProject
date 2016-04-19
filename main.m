@@ -5,7 +5,7 @@ grid_resolution = 100;
 sampling_rate = 1;
 
 % gradient descent
-iters = 100;
+gd_iters = 100;
 derivative_step = 0.01;
 
 % Skeleton input
@@ -31,8 +31,13 @@ for i = 1:size(skeleton_joints, 2)
     pts = [linspace(point1(1), point2(1), num_pts); ...
            linspace(point1(2), point2(2), num_pts); ...
            linspace(point1(3), point2(3), num_pts)];
-    sampled_pts
-    pts
     sampled_pts = [sampled_pts,pts];
 end
-scatter3(sampled_pts(1,:), sampled_pts(2,:), sampled_pts(3,:));
+% scatter3(sampled_pts(1,:), sampled_pts(2,:), sampled_pts(3,:));
+
+surface = zeros(grid_resolution);
+
+for i = 1:gd_iters
+    [surface, error] = grad_descent(surface, sampled_pts);
+    error
+end
