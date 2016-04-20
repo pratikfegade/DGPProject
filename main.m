@@ -3,19 +3,20 @@ global grid_resolution
 grid_resolution = 20;
 % Fraction of grid over which skeleton is present. Need not be changed
 % normally
-grid_fraction = 0.8;
+grid_fraction = 0.5;
 
 % Error params
-global gap_penalty_multiplier collision_penalty_multiplier
+global gap_penalty_multiplier collision_penalty_multiplier smooth_iters
 global smoothness_penalty_multiplier concavity_penalty_multiplier prior_penalty_multiplier
 gap_penalty_multiplier = 1;
 collision_penalty_multiplier = 1;
-smoothness_penalty_multiplier = 0.01;
+smoothness_penalty_multiplier = 0.0;
 concavity_penalty_multiplier = 1;
 prior_penalty_multiplier = 1;
+smooth_iters = 1;
 
 % Skeleton sampling params
-sampling_rate = 1;
+sampling_rate = 5;
 
 % gradient descent
 gd_iters = 100;
@@ -56,6 +57,7 @@ surface = zeros(grid_resolution * 2 + 1) -100;
 for i = 1:gd_iters
     i
     [surface, error] = grad_descent(surface, sampled_pts);
+    surface = smoothen_surface(surface);
     error
 end
 
