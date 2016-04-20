@@ -9,8 +9,8 @@ grid_fraction = 0.5;
 global gap_penalty_multiplier collision_penalty_multiplier smooth_iters descent_iters
 global smoothness_penalty_multiplier concavity_penalty_multiplier prior_penalty_multiplier
 gap_penalty_multiplier = 1;
-collision_penalty_multiplier = 5;
-smoothness_penalty_multiplier = 0;
+collision_penalty_multiplier = 10;
+smoothness_penalty_multiplier = 0.5;
 concavity_penalty_multiplier = 1;
 prior_penalty_multiplier = 1;
 smooth_iters = 1;
@@ -58,7 +58,7 @@ surface = zeros(grid_resolution * 2 + 1) -100;
 for i = 1:gd_iters
     i
     [surface, error] = perform_grad_descent(surface, sampled_pts);
-    if mod(i,10)==0; surface = smoothen_surface(surface); end;      %don't smoothen at every step.
+%     if mod(i,10)==0; surface = smoothen_surface(surface); end;      %don't smoothen at every step.
     error
 end
 
