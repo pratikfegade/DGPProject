@@ -1,4 +1,4 @@
-function [penalty] = smoothness_penalty(surface, skeleton)
+function [penalty] = smoothness_penalty(surface, ~)
     global grid_resolution;
     padded_surface = padarray(surface, [2,2], 'replicate', 'both');
     padded_surface = padarray(padded_surface, [2,1], 'replicate', 'both');

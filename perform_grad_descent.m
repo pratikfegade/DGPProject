@@ -1,7 +1,10 @@
-function [new_surf, error] = perform_grad_descent(surface, skeleton)
-    global descent_iters
+function [new_surf, error] = perform_grad_descent(surface, skeleton, error_function, n_iters)
+    global descent_multiplier;
+    descent_multiplier = 1;
     new_surf = surface;
-    for i = 1:descent_iters
-        [new_surf, error] = grad_descent(new_surf, skeleton);
+    error = 0;
+    for i = 1:n_iters
+        [new_surf, error] = grad_descent(new_surf, skeleton, error_function);
+        error
     end
 end

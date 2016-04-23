@@ -1,5 +1,7 @@
-function [gap_penalty,col_penalty] = gap_collision_penalty(surface, skeleton)
+function [gap_collision_penalty] = gap_collision_penalty(surface, skeleton)
     global grid_resolution
+    
+    collision_scaler = 5;
     
     p1s = floor(skeleton(1:2, :) * grid_resolution / 100) + grid_resolution + 1;
     p2s = ceil(skeleton(1:2, :) * grid_resolution / 100) + grid_resolution + 1;
@@ -15,5 +17,6 @@ function [gap_penalty,col_penalty] = gap_collision_penalty(surface, skeleton)
     Tabs = abs(T);
     
     gap_penalty = sum(Tabs + T); % Gap penalty = 0 if skeleton under the surface
-    col_penalty = sum(Tabs - T); % Collision penalty = 0 if skeleton above the surface
+    col_penalty = collision_scaler * sum(Tabs - T); % Collision penalty = 0 if skeleton above the surface
+    gap_collision_penalty = gap_penalty + col_penalty;
 end

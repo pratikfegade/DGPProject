@@ -5,24 +5,16 @@ grid_resolution = 20;
 % normally
 grid_fraction = 0.5;
 
-% Error params
-global gap_penalty_multiplier collision_penalty_multiplier smooth_iters descent_iters
-global smoothness_penalty_multiplier concavity_penalty_multiplier prior_penalty_multiplier
-gap_penalty_multiplier = 1;
-collision_penalty_multiplier = 10;
-smoothness_penalty_multiplier = 0.5;
-concavity_penalty_multiplier = 1;
-prior_penalty_multiplier = 1;
-smooth_iters = 1;
-descent_iters = 1;
+smoothness_iters = 3;
+gap_collision_iters = 5;
 
 % Skeleton sampling params
 sampling_rate = 5;
 
 % gradient descent
 gd_iters = 100;
-global apunka_derivative_step
-apunka_derivative_step = 0.01;
+global derivative_step
+derivative_step = 0.01;
 global descent_multiplier
 descent_multiplier = 1;
 
@@ -55,10 +47,14 @@ scatter3(sampled_pts(1,:), sampled_pts(2,:), sampled_pts(3,:));
 
 surface = zeros(grid_resolution * 2 + 1) -100;
 
+error_components = { @smoothness_penalty, @gap_collision_penalty}
+component_iters = [smoothness_iters, gap_collision_iters]
+
 for i = 1:gd_iters
     i
-    [surface, error] = perform_grad_descent(surface, sampled_pts);
-%     if mod(i,10)==0; surface = smoothen_surface(surface); end;      %don't smoothen at every step.
+    for j = 1:size(error_components, 2)
+        [surface, error] = perform_grad_descent(surface, sampled_pts, error_components{j}, component_iters(j));
+    end
     error
 end
 
