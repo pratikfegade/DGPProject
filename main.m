@@ -5,18 +5,19 @@ grid_resolution = 20;
 % normally
 grid_fraction = 0.5;
 
-smoothness_iters = 3;
-gap_collision_iters = 5;
+gap_collision_iters = 1;
 
 % Skeleton sampling params
 sampling_rate = 5;
 
 % gradient descent
-gd_iters = 100;
+gd_iters = 50;
 global derivative_step
 derivative_step = 0.01;
 global descent_multiplier
 descent_multiplier = 1;
+global smooth_iters
+smooth_iters = 2;
 
 % Skeleton input
 skeleton_points = importdata('./data/ske_1_points.txt')';
@@ -43,21 +44,19 @@ for i = 1:size(skeleton_joints, 2)
            linspace(point1(3), point2(3), num_pts)];
     sampled_pts = [sampled_pts,pts];
 end
-scatter3(sampled_pts(1,:), sampled_pts(2,:), sampled_pts(3,:));
 
 surface = zeros(grid_resolution * 2 + 1) -100;
 
-error_components = { @smoothness_penalty, @gap_collision_penalty}
-component_iters = [smoothness_iters, gap_collision_iters]
+error_components = { @gap_collision_penalty}
+component_iters = [ gap_collision_iters]
+global f;
+f = figure;
 
 for i = 1:gd_iters
     i
     for j = 1:size(error_components, 2)
         [surface, error] = perform_grad_descent(surface, sampled_pts, error_components{j}, component_iters(j));
     end
-    error
 end
 
-figure;hold all;
-surf(linspace(-100, 100, 2*grid_resolution+1), linspace(-100,100, 2*grid_resolution+1), surface')
-scatter3(sampled_pts(1,:), sampled_pts(2,:), sampled_pts(3,:))
+
