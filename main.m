@@ -6,12 +6,14 @@ grid_resolution = 20;
 grid_fraction = 0.5;
 
 gap_collision_iters = 1;
+concavity_iters = 1;
+prior_iters = 1;
 
 % Skeleton sampling params
 sampling_rate = 5;
 
 % gradient descent
-gd_iters = 50;
+gd_iters = 200;
 global derivative_step
 derivative_step = 0.01;
 global descent_multiplier
@@ -47,16 +49,30 @@ end
 
 surface = zeros(grid_resolution * 2 + 1) -100;
 
-error_components = { @gap_collision_penalty}
-component_iters = [ gap_collision_iters]
+error_components = { @gap_collision_penalty, @concavity_penalty, @prior_penalty}
+component_iters = [ gap_collision_iters, concavity_iters, prior_iters]
 global f;
 f = figure;
+
+error_track = [1, 1];
 
 for i = 1:gd_iters
     i
     for j = 1:size(error_components, 2)
+        prev_error = error;
         [surface, error] = perform_grad_descent(surface, sampled_pts, error_components{j}, component_iters(j));
+        error_track(j) = abs(prev_error - error);
     end
+%     [minv, mind] = min(error_track);
+%     for j = 1:size(error_components, 2)
+%         if j == mind
+%             component_iters(j) = 1
+%         else
+%             component_iters(j) = ceil(error_track(j) / error_track(mind));
+%         end
+%     end
+%     component_iters
+    
 end
 
 

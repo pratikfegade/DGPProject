@@ -4,7 +4,7 @@ function [new_surf, error] = perform_grad_descent(surface, skeleton, error_funct
     new_surf = surface;
     error = 0;
     for i = 1:n_iters
-        [new_surf, error] = pointwise_grad_descent(new_surf, skeleton, error_function);
+        [new_surf, error] = grad_descent(new_surf, skeleton, error_function);
         update_plot(new_surf, skeleton);
         error
     end
