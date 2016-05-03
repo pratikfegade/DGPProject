@@ -1,6 +1,5 @@
-function [penalty] = concavity_penalty(surface, skeleton)
+function [penalty] = flatness_penalty(surface, skeleton)
     global grid_resolution
-    penalty = 0;
     max_concavity = 100000;
     mask = zeros(size(surface));
     p1s = floor(skeleton(1:2, :) * grid_resolution / 100) + grid_resolution + 1;
@@ -17,8 +16,8 @@ function [penalty] = concavity_penalty(surface, skeleton)
     mask(points_4) = 1;
     
     f = [0.5,1,0.5;1,-6,1;0.5,1,0.5];
-    concavity = filter2(f, surface, 'same');
-    concavity = concavity .* mask;
-    penalty = max([1000-sum(sum(concavity)), 0]);
+    flatness = filter2(f, surface, 'same');
+    flatness = abs(flatness .* mask);
+    penalty = sum(flatness(:));
     
 end
