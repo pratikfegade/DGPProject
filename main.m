@@ -34,6 +34,9 @@ max_dims = ske_max - ske_min;
 max_dim_length = max(max_dims(1:2,:), [], 1);
 skeleton_points = skeleton_points * (grid_fraction * 200) / max_dim_length;
 
+% Keep feet on the ground
+skeleton_points(3,:) = skeleton_points(3,:) - min(skeleton_points(3,:)) + 5;
+
 % Sample skeleton
 sampled_pts = [];
 for i = 1:size(skeleton_joints, 2)
@@ -47,15 +50,17 @@ for i = 1:size(skeleton_joints, 2)
     sampled_pts = [sampled_pts,pts];
 end
 
-surface = zeros(grid_resolution * 2 + 1) -100;
+surface = zeros(grid_resolution * 2 + 1);
 
-error_components = { @gap_collision_penalty, @concavity_penalty, @prior_penalty}
-component_iters = [ gap_collision_iters, concavity_iters, prior_iters]
+% error_components = { @gap_collision_penalty, @concavity_penalty, @prior_penalty}
+error_components = { @gap_collision_penalty, @prior_penalty}
+% component_iters = [ gap_collision_iters, concavity_iters, prior_iters]
+component_iters = [ gap_collision_iters, prior_iters]
 global f;
 f = figure;
 
 error_track = [1, 1];
-
+error = inf;
 for i = 1:gd_iters
     i
     for j = 1:size(error_components, 2)

@@ -2,11 +2,11 @@ function [penalty] = prior_penalty(surface, skeleton)
     penalty = 0;
     global grid_resolution;
     sofa = zeros(2*grid_resolution + 1);
-    offset = floor(2 * grid_resolution / 10);
-    width = floor((2 * grid_resolution / 10) * 8);
-    sofa(offset:(offset+width), offset:(offset+width)) = 1;
-    sofa(offset:(offset+floor(width/4)), offset:(offset+width)) = 4;
+    x1 = -floor(grid_resolution / 10 * 5); x2 = floor(grid_resolution / 10); x3 = -floor(grid_resolution / 10 * 4);
+    y1 = -floor(grid_resolution / 10 * 5); y2 = floor(grid_resolution / 10 * 5);
+    sofa(x1+grid_resolution:x2+grid_resolution, y1+grid_resolution:y2+grid_resolution) = 1;
+    sofa(x1+grid_resolution:x3+grid_resolution, y1+grid_resolution:y2+grid_resolution) = 3;
     
     v = surface .* sofa;
-    penalty = max([-100000-sum(sum(v)), 0]);
+    penalty = max(-sum(v(:))/(norm(surface(:)) * norm(sofa(:))), -0.85); % 0.85 is a tuned parameter
 end
